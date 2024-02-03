@@ -3,6 +3,7 @@ services:
   web:
     build:
       context: .
+      dockerfile: Dockerfile.dev # Use Dockerfile.dev for development
     volumes:
       - .:/app
     ports:
