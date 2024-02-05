@@ -46,7 +46,7 @@ class FoodMenuItemsController < ApplicationController
     else
       csv_import_tracker = CsvImportTracker.new(user: current_user, status: 'In Progress')
       if csv_import_tracker.save!
-        job = FoodMenu::ImportCsv.call(current_user, params[:csv_file], csv_import_tracker.id)
+        job = FoodMenu::ImportCsv.delay.call(current_user, params[:csv_file], csv_import_tracker.id)
         csv_import_tracker.update(delayed_job_id: job.id)
         render json: { csv_import_tracker_id: csv_import_tracker.id, message: 'CSV import started' }
       else
@@ -59,7 +59,7 @@ class FoodMenuItemsController < ApplicationController
     if current_user.nil?
       render json: { error: 'No user is currently logged in. Please log in to perform this action.' }, status: :unprocessable_entity
     else
-      csv_file_path = FoodMenu::DownloadCsv.call(current_user)
+      csv_file_path = FoodMenu::GenerateCsv.call(current_user)
       send_file(csv_file_path, type: 'text/csv', filename: 'food_menu_items.csv')
     end
   end
