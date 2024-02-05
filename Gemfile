@@ -50,7 +50,7 @@ gem 'devise'
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
-  gem 'byebug'
+  gem 'byebug', platforms: %i[mri mingw x64_mingw]
 end
 
 group :development do
@@ -75,3 +75,5 @@ gem "turbolinks", "~> 5.2"
 gem "bootstrap", "~> 5.3"
 gem 'sassc-rails'
 gem 'letter_opener_web'
+
+gem "delayed_job_active_record", "~> 4.1"
