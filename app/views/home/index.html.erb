@@ -1,0 +1,129 @@
+<!-- app/views/home/index.html.erb -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to My App</title>
+  <!-- Include Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Include CSS & JavaScript -->
+  <%= stylesheet_link_tag 'application', 'home_page' %>
+  <%= javascript_include_tag 'application', 'home_page' %>
+  <!-- Include jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- Include Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <h1>Welcome to Our Landing Page</h1>
+  
+  <% if user_signed_in? %>
+    <p>Hello, <%= current_user.email.split('@').first %>!</p>
+    <p>Email: <%= current_user.email %></p>
+    <!-- Sign-out Link -->
+    <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'btn btn-danger', id: 'signOutButton' %>
+  <% else %>
+    <script type="text/javascript">
+      window.location.href = "<%= new_user_session_path %>";
+    </script>
+  <% end %>
+  
+  <p>Explore our awesome features:</p>
+  <ul>
+    <!-- Import Button with Modal Trigger -->
+    <li>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importCSVModal">
+        Import Food Menu Using CSV
+      </button>
+    </li>
+    <!-- Button to trigger the List Menu Modal -->
+    <li><a href="#" data-bs-toggle="modal" data-bs-target="#listMenuModal">List Food Menu</a></li>
+  </ul>
+
+  <!-- Import CSV Modal -->
+  <div class="modal fade" id="importCSVModal" tabindex="-1" aria-labelledby="importCSVModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Use modal-lg for a larger modal -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="importCSVModalLabel">Import Food Menu Using CSV</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Import CSV Form -->
+          <form id="importCSVForm" enctype="multipart/form-data" action="/import_csv" method="post">
+            <!-- File Input -->
+            <div class="mb-3">
+              <label for="csvFile" class="form-label">Select CSV File</label>
+              <input type="file" class="form-control" id="csvFile" name="csv_file" accept=".csv" required>
+            </div>
+            <!-- Buttons -->
+            <div class="mb-3">
+              <button type="button" class="btn btn-primary" id="downloadSampleCSV">Generate Sample CSV</button>
+              <button type="submit" class="btn btn-primary">Import CSV</button>
+            </div>
+          </form>
+          <!-- Recent CSV Imports Table -->
+          <h3>Recent CSV Imports</h3>
+          <div class="d-flex justify-content-end mb-2">
+            <!-- Refresh Button -->
+            <button type="button" class="btn btn-secondary btn-sm" id="refreshCSVTable">
+              <i class="bi bi-arrow-clockwise"></i> Refresh
+            </button>
+          </div>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Status</th>
+                <th>Error Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Sample Data (replace with dynamic data from your application) -->
+              <tr>
+                <td data-toggle="tooltip" title="Exact Timestamp">1 day ago</td>
+                <td>In Progress</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td data-toggle="tooltip" title="Exact Timestamp">1 week ago</td>
+                <td>Completed</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td data-toggle="tooltip" title="Exact Timestamp">2 weeks ago</td>
+                <td>Failed</td>
+                <td data-error-count="3"><a href="#" class="error-count-link">3</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- List Menu Modal -->
+  <div class="modal fade" id="listMenuModal" tabindex="-1" aria-labelledby="listMenuModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="listMenuModalLabel">List Food Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Add content for List Menu modal here -->
+          This is the List Menu modal content.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
