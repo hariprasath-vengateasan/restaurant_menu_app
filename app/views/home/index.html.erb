@@ -51,11 +51,12 @@
         </div>
         <div class="modal-body">
           <!-- Import CSV Form -->
-          <form id="importCSVForm" enctype="multipart/form-data" action="/import_csv" method="post">
+          <form id="importCSVForm" enctype="multipart/form-data" action="/food_menu_items/import_csv" method="post">
             <!-- File Input -->
             <div class="mb-3">
               <label for="csvFile" class="form-label">Select CSV File</label>
               <input type="file" class="form-control" id="csvFile" name="csv_file" accept=".csv" required>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
             </div>
             <!-- Buttons -->
             <div class="mb-3">
