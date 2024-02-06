@@ -6,7 +6,7 @@ DB_HOST=db
 DB_PORT=5432
 DB_USER=postgres
 DB_NAME=restaurant_menu_app_prod_db
-DB_PASSWORD=${POSTGRES_PASSWORD} # Ensure this is passed from Docker Compose
+DB_PASSWORD=secret
 
 # Wait for PostgreSQL to start
 echo "Waiting for PostgreSQL to start..."

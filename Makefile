@@ -53,11 +53,12 @@ stop-prod:
 	$(DOCKER_COMPOSE_PROD) down
 	@echo "Production environment stopped."
 
-# Clean up stopped containers and unused volumes
+# Clean up stopped containers, but preserve the database volume
 clean:
-	docker-compose -f docker-compose.yml down -v
-	docker-compose -f docker-compose-prod.yml down -v
-	@echo "Containers and volumes cleaned up."
+    docker-compose -f docker-compose.yml down
+    docker-compose -f docker-compose-prod.yml down
+    @echo "Containers stopped and removed. Database volume preserved."
+
 
 # Default target
 default: help
