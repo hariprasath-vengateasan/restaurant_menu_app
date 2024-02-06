@@ -17,6 +17,7 @@ module FoodMenu
     def call
       process_data
       update_error_message
+      remove_csv_file_from_temp
     end
 
     private
@@ -28,7 +29,6 @@ module FoodMenu
         validate_food_menu_params(food_menu_params)
 
         next if @issues.any? && (@error_messages += @issues)
-
         food_menu_params[:dish_name] = format_string(food_menu_params[:dish_name])
 
         if existing_food_menu = find_existing_food_menu(food_menu_params[:dish_name])
@@ -88,17 +88,17 @@ module FoodMenu
 
     def validate_string(params, field, options = {})
       return unless params[field].present?
-      return if params[field].is_a?(String)
+      return if params[field]&.is_a?(String)
 
       @issues << {
         base: "field_error #{field}",
-        error: "#{field.to_s.humanize} should be a string"
+        error: "#{field&.to_s.humanize} should be a string"
       }
 
       if options[:required] && params[field].blank?
         @issues << {
           base: "field_error #{field}",
-          error: "#{field.to_s.humanize} can't be blank"
+          error: "#{field&.to_s.humanize} can't be blank"
         }
       end
     end
@@ -133,6 +133,11 @@ module FoodMenu
 
     def update_error_message
       csv_import_tracker.update(status: 'Failed', error_messages: @error_messages) unless @error_messages.blank?
+    end
+
+    def remove_csv_file_from_temp
+      # Delete the CSV file at the end of the service
+      File.delete(csv_file_path) if File.exist?(csv_file_path)
     end
   end
 end
