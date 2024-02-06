@@ -1,130 +1,123 @@
-<!-- app/views/home/index.html.erb -->
-
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Welcome to My App</title>
-  <!-- Include Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Include CSS & JavaScript -->
-  <%= stylesheet_link_tag 'application', 'home_page' %>
-  <%= javascript_include_tag 'application', 'home_page' %>
-  <!-- Include jQuery -->
+  <title>Food Menu Management</title>
+  <%= csrf_meta_tags %>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-  <!-- Include Bootstrap JS -->
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <%= stylesheet_link_tag 'home_page', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_include_tag 'home_page', 'data-turbolinks-track': 'reload' %>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-  <h1>Welcome to Our Landing Page</h1>
+<div class="container mt-5" id='div-body'>
+  <h1>Food Menu Dashboard</h1>
+  <div class="actions">
+    <form id="downloadCsvForm" action="/food_menu_items/generate_csv_data" method="GET" style="display: inline-block;">
+      <button type="submit" class="btn btn-success">Download CSV</button>
+    </form>
+    <button id="importCsv" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importCSVModal">Import CSV</button>
+  </div>
+
   
-  <% if user_signed_in? %>
-    <p>Hello, <%= current_user.email.split('@').first %>!</p>
-    <p>Email: <%= current_user.email %></p>
-    <!-- Sign-out Link -->
-    <%= link_to 'Sign Out', destroy_user_session_path, method: :delete, class: 'btn btn-danger', id: 'signOutButton' %>
-  <% else %>
-    <script type="text/javascript">
-      window.location.href = "<%= new_user_session_path %>";
-    </script>
-  <% end %>
-  
-  <p>Explore our awesome features:</p>
-  <ul>
-    <!-- Import Button with Modal Trigger -->
-    <li>
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importCSVModal">
-        Import Food Menu Using CSV
-      </button>
-    </li>
-    <!-- Button to trigger the List Menu Modal -->
-    <li><a href="#" data-bs-toggle="modal" data-bs-target="#listMenuModal">List Food Menu</a></li>
-  </ul>
+  <h2>My Food Menus</h2>
+  <table id="foodMenuTable" class="table">
+    <thead>
+      <tr>
+        <th>Dish Name</th>
+        <th>Dish Description</th>
+        <th>Category</th>
+        <th>Dish Type</th>
+        <th>Allergens</th>
+        <th>Price</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Dynamic rows will be loaded here -->
+    </tbody>
+  </table>
+
+  <!-- CSV Import Tracker -->
+  <h2>CSV Import Tracker</h2>
+  <table id="csvTrackerTable" class="table">
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Status</th>
+        <th>Error Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Dynamic rows will be loaded here -->
+    </tbody>
+  </table>
 
   <!-- Import CSV Modal -->
   <div class="modal fade" id="importCSVModal" tabindex="-1" aria-labelledby="importCSVModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg"> <!-- Use modal-lg for a larger modal -->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="importCSVModalLabel">Import Food Menu Using CSV</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Import CSV Form -->
-          <form id="importCSVForm" enctype="multipart/form-data" action="/food_menu_items/import_csv" method="post">
-            <!-- File Input -->
-            <div class="mb-3">
-              <label for="csvFile" class="form-label">Select CSV File</label>
-              <input type="file" class="form-control" id="csvFile" name="csv_file" accept=".csv" required>
-              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-            </div>
-            <!-- Buttons -->
-            <div class="mb-3">
-              <button type="button" class="btn btn-primary" id="downloadSampleCSV">Generate Sample CSV</button>
-              <button type="submit" class="btn btn-primary">Import CSV</button>
-            </div>
-          </form>
-          <!-- Recent CSV Imports Table -->
-          <h3>Recent CSV Imports</h3>
-          <div class="d-flex justify-content-end mb-2">
-            <!-- Refresh Button -->
-            <button type="button" class="btn btn-secondary btn-sm" id="refreshCSVTable">
-              <i class="bi bi-arrow-clockwise"></i> Refresh
-            </button>
-          </div>
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Timestamp</th>
-                <th>Status</th>
-                <th>Error Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Sample Data (replace with dynamic data from your application) -->
-              <tr>
-                <td data-toggle="tooltip" title="Exact Timestamp">1 day ago</td>
-                <td>In Progress</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td data-toggle="tooltip" title="Exact Timestamp">1 week ago</td>
-                <td>Completed</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td data-toggle="tooltip" title="Exact Timestamp">2 weeks ago</td>
-                <td>Failed</td>
-                <td data-error-count="3"><a href="#" class="error-count-link">3</a></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- List Menu Modal -->
-  <div class="modal fade" id="listMenuModal" tabindex="-1" aria-labelledby="listMenuModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="listMenuModalLabel">List Food Menu</h5>
+          <h5 class="modal-title" id="importCSVModalLabel">Import Food Menu CSV</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <!-- Add content for List Menu modal here -->
-          This is the List Menu modal content.
+          <input type="file" id="csvFileInput" name="csv_file" accept=".csv">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="submitCsv" class="btn btn-primary">Import</button>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Food Menu details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="edit-popup-fields" >
+            <label for="w3review">Dish Name</label>
+            <input type="text" id="dish_name" class="mt-2 mb-2" value="">
+          </div>
+          <div class="edit-popup-fields" >
+            <label for="w3review">Dish Description</label>
+            <textarea type="text" id="dish_description" class="mt-2 mb-2" value=""></textarea>
+          </div>
+
+          <div class="edit-popup-fields" >
+            <label for="w3review">Category</label>
+            <input type="text" id="category" class="mt-2 mb-2" value="">
+          </div>
+
+          <div class="edit-popup-fields" >
+            <label for="w3review">Dish Type</label>
+            <input type="text" id="dish_type" class="mt-2 mb-2" value="">
+          </div>
+
+          <div class="edit-popup-fields" >
+            <label for="w3review">Allergens</label>
+            <input type="text" id="allergens" class="mt-2 mb-2" value="">
+          </div>
+
+
+          <div class="edit-popup-fields" >
+            <label for="w3review">Price</label>
+            <input type="text" id="price" class="mt-2 mb-2" value="">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" id="submitEditForm" class="btn btn-primary">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

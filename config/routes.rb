@@ -17,4 +17,6 @@ Rails.application.routes.draw do
       post :import_csv
     end
   end
+
+  resources :csv_import_tracker, only: [:index]
 end
