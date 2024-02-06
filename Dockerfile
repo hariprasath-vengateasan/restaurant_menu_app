@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 80
 
 # Start the Rails application in development mode
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "80"]

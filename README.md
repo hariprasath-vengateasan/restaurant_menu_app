@@ -42,6 +42,7 @@ You have two options for setting up and deploying the Restaurant Menu App:
    **Available Commands**:
 
    - `make setup-dev`: Sets up the development environment.
+   - `first-time-setup-prod`: First Time Setup in production environment.
    - `make setup-prod`: Sets up the production environment.
    - `make run-dev`: Runs the development environment.
    - `make run-prod`: Runs the production environment.
