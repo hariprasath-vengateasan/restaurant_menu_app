@@ -116,9 +116,9 @@ $(document).ready(function() {
         type: 'POST', // Use POST here because of how Rails handles PATCH/PUT requests
         data: formData,
         success: function(response) {
-            alert("Food item updated successfully.");
-            $('#editModal').modal('hide');
-            fetchFoodMenus(); // Refresh the food menus list
+          $('#editModal').modal('hide');  
+          alert("Food item updated successfully.");
+          fetchFoodMenus(); // Refresh the food menus list
         },
         error: function(xhr, status, error) {
             alert("Error updating food item: " + error);
@@ -138,7 +138,6 @@ $(document).ready(function() {
         'price': $('#new_price').val()
       }
     };
-    debugger;
     $.ajax({
       url: '/food_menu_items',
       type: 'POST',
@@ -173,6 +172,9 @@ $(document).ready(function() {
       success: function(data) {
         var tableBody = $('#csvTrackerTable tbody');
         tableBody.empty();
+        if (data[0].status == 'Completed') {
+          fetchFoodMenus();
+        }
         data.forEach(function(item) {
           var row = `<tr>
             <td>${item.created_at}</td>

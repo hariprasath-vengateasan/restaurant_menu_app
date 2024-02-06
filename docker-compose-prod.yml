@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  web:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile.prod # Use Dockerfile.prod for production
+    volumes:
+      - .:/app
+    ports:
+      - "80:80"
+    environment:
+      RAILS_ENV: production
