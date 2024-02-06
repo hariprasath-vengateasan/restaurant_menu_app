@@ -77,4 +77,3 @@ gem "jquery-rails", "~> 4.6"
 gem "turbolinks", "~> 5.2"
 gem "bootstrap", "~> 5.3"
 gem 'sassc-rails'
-gem 'dotenv', require: 'dotenv/load'

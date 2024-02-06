@@ -48,7 +48,7 @@ run-dev:
 
 # Run production environment
 run-prod:
-	$(DOCKER_PROD)
+	$(DOCKER_COMPOSE_PROD) up -d --build
 	@echo "Production environment is running at http://localhost:80"
 
 # Stop production environment
