@@ -1,63 +1,64 @@
-# Makefile for Restaurant Menu App
+# Makefile for simplifying Docker commands for the Rails project
 
 # Variables
-IMAGE_NAME = restaurant_menu_app
 DOCKER_COMPOSE_DEV = docker-compose -f docker-compose.yml
 DOCKER_COMPOSE_PROD = docker-compose -f docker-compose-prod.yml
 
 # Help message
 help:
-	@echo "Restaurant Menu App Makefile"
-	@echo ""
 	@echo "Available commands:"
-	@echo "  setup-dev                         Setup development environment"
-	@echo "  first-time-setup-prod             First Time Setup in production environment"
-	@echo "  setup-prod                        Setup production environment"
-	@echo "  run-dev                           Run development environment"
-	@echo "  run-prod                          Run production environment"
-	@echo "  stop-prod                         Stop production environment"
-	@echo "  clean                             Remove stopped containers and unused volumes"
-	@echo "  help                              Show this help message"
+	@echo "  setup-dev                 - Setup development environment"
+	@echo "  setup-prod                - Setup production environment, including database creation and migration"
+	@echo "  run-dev                   - Run development environment"
+	@echo "  run-prod                  - Run production environment"
+	@echo "  stop-dev                 - Stop Development environment"
+	@echo "  stop-prod                 - Stop production environment"
+	@echo "  clean                     - Remove stopped containers, preserve the volume"
+	@echo "  force-clean                     - Remove stopped containers and unused volumes"
 
 # Setup development environment
 setup-dev:
 	$(DOCKER_COMPOSE_DEV) build
-	$(DOCKER_COMPOSE_DEV) run web rails db:create db:migrate
+	$(DOCKER_COMPOSE_DEV) run web rails db:create db:migrate db:seed
 	@echo "Development environment is ready."
-
-# First Time Production setup
-first-time-setup-prod:
-	$(DOCKER_COMPOSE_PROD) build
-	$(DOCKER_COMPOSE_PROD) run web bundle install
-	$(DOCKER_COMPOSE_PROD) run web rails db:create db:migrate
-	@echo "First-time production environment setup is complete."
 
 # Setup production environment
 setup-prod:
 	$(DOCKER_COMPOSE_PROD) build
-	$(DOCKER_COMPOSE_PROD) run web rails db:migrate
+	$(DOCKER_COMPOSE_PROD) run web rails db:create db:migrate db:seed
 	@echo "Production environment is ready."
 
 # Run development environment
 run-dev:
-	$(DOCKER_COMPOSE_DEV) up -d
-	@echo "Development environment is running at http://localhost:3000"
+	$(DOCKER_COMPOSE_DEV) up
+	@echo "Development environment is running."
 
 # Run production environment
 run-prod:
-	$(DOCKER_COMPOSE_PROD) up -d --build
-	@echo "Production environment is running."
+	$(DOCKER_COMPOSE_PROD) up -d
+	@echo "Production environment is running at http://localhost:80"
+
+# Stop Development environment
+stop-dev:
+	$(DOCKER_COMPOSE_DEV) down
+	@echo "Development environment stopped."
 
 # Stop production environment
 stop-prod:
 	$(DOCKER_COMPOSE_PROD) down
 	@echo "Production environment stopped."
 
-# Clean up stopped containers, but preserve the database volume
+# Clean up stopped containers and unused volumes
 clean:
-	$(DOCKER_COMPOSE_DEV) down
-	$(DOCKER_COMPOSE_PROD) down
-	@echo "Containers stopped and removed. Database volume preserved."
+	$(DOCKER_COMPOSE_DEV) down --remove-orphans
+	$(DOCKER_COMPOSE_PROD) down --remove-orphans
+	@echo "Cleaned up."
+
+# Force Clean up stopped containers and delete unused volumes
+force-clean:
+	$(DOCKER_COMPOSE_DEV) down --volumes --remove-orphans
+	$(DOCKER_COMPOSE_PROD) down --volumes --remove-orphans
+	@echo "Cleaned up."
 
 # Default target
 default: help

@@ -22,9 +22,5 @@ else
   echo "Database $DB_NAME already exists."
 fi
 
-# Run database migrations
-echo "Running database migrations..."
-PGPASSWORD=$DB_PASSWORD bin/rails db:migrate
-
 # Exec the container's main process (CMD)
 exec "$@"

@@ -9,11 +9,26 @@ services:
     volumes:
       - .:/app
     ports:
-      - "80:80"
+      - "80:3000" # Exposing the app on port 80 to the outside, mapping to the internal port 3000
     depends_on:
       - db
     environment:
       RAILS_ENV: development
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: rails jobs:work
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      RAILS_ENV: development
+
   db:
     image: postgres:13 # Use the desired PostgreSQL version
     volumes:

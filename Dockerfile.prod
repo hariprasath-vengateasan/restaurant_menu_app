@@ -1,46 +1,39 @@
-# Make sure it matches the Ruby version in .ruby-version and Gemfile
+# Base Ruby image matching project Ruby version
 ARG RUBY_VERSION=3.2.3
 FROM ruby:$RUBY_VERSION
 
-# Install dependencies
+# Install dependencies, including libraries for Rails, image processing, and database interactions
 RUN apt-get update -qq && \
     apt-get install -y build-essential libvips bash bash-completion libffi-dev tzdata postgresql-client nodejs npm yarn && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc /usr/share/man
 
-# Create a non-root user
-RUN useradd -m -s /bin/bash appuser
-USER appuser
+# Set the working directory
+WORKDIR /app
 
-# Rails app lives here
-WORKDIR /rails
+# Set environment variables for Rails to run in production
+ENV RAILS_LOG_TO_STDOUT=true \
+    RAILS_SERVE_STATIC_FILES=true \
+    RAILS_ENV=production
 
-# Set production environment
-ENV RAILS_LOG_TO_STDOUT="1" \
-    RAILS_SERVE_STATIC_FILES="true" \
-    RAILS_ENV="production" \
-    BUNDLE_WITHOUT="development test"
+# Copy Gemfile and Gemfile.lock, and install gems for production
+COPY Gemfile Gemfile.lock ./
+RUN bundle config set --local without 'development test' && \
+    bundle install
 
-# Install application gems
-COPY --chown=appuser:appuser Gemfile Gemfile.lock ./
-RUN bundle install
+# Copy the application code
+COPY . .
 
-# Copy application code
-COPY --chown=appuser:appuser . .
+# Precompile assets
+RUN SECRET_KEY_BASE=placeholder RAILS_ENV=production rails assets:precompile
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile --gemfile app/ lib/
-
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE=1 RAILS_ENV=production bin/rails assets:precompile
-
-# Copy entrypoint script and set permissions
-COPY --chown=appuser:appuser ./bin/docker-entrypoint /usr/bin/docker-entrypoint.sh
+# Copy and set permissions for the entrypoint script
+COPY ./bin/docker-entrypoint /usr/bin/docker-entrypoint.sh
 RUN chmod +x /usr/bin/docker-entrypoint.sh
 
-# Use the entrypoint script to prepare the database and other setup tasks
+# Entrypoint to prepare database and other setup tasks
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 80
-CMD ["./bin/rails", "server", "-p", "80"]
+# Expose port 80 and start the Rails server
+EXPOSE 4000
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "4000"]
