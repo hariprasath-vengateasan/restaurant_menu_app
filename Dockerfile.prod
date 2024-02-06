@@ -35,7 +35,7 @@ RUN bundle exec bootsnap precompile --gemfile app/ lib/
 RUN SECRET_KEY_BASE=1 RAILS_ENV=production bin/rails assets:precompile
 
 # Copy entrypoint script and set permissions
-COPY --chown=appuser:appuser ./docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
+COPY --chown=appuser:appuser ./bin/docker-entrypoint /usr/bin/docker-entrypoint.sh
 RUN chmod +x /usr/bin/docker-entrypoint.sh
 
 # Use the entrypoint script to prepare the database and other setup tasks
