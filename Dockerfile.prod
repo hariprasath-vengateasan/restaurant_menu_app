@@ -2,11 +2,15 @@
 ARG RUBY_VERSION=3.2.3
 FROM ruby:$RUBY_VERSION
 
-# Install libvips for Active Storage preview support
+# Install dependencies
 RUN apt-get update -qq && \
     apt-get install -y build-essential libvips bash bash-completion libffi-dev tzdata postgresql-client nodejs npm yarn && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /usr/share/doc /usr/share/man
+
+# Create a non-root user
+RUN useradd -m -s /bin/bash appuser
+USER appuser
 
 # Rails app lives here
 WORKDIR /rails
@@ -15,14 +19,14 @@ WORKDIR /rails
 ENV RAILS_LOG_TO_STDOUT="1" \
     RAILS_SERVE_STATIC_FILES="true" \
     RAILS_ENV="production" \
-    BUNDLE_WITHOUT="development"
+    BUNDLE_WITHOUT="development test"
 
 # Install application gems
-COPY Gemfile Gemfile.lock ./
+COPY --chown=appuser:appuser Gemfile Gemfile.lock ./
 RUN bundle install
 
 # Copy application code
-COPY . .
+COPY --chown=appuser:appuser . .
 
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile --gemfile app/ lib/
@@ -30,9 +34,13 @@ RUN bundle exec bootsnap precompile --gemfile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE=1 RAILS_ENV=production bin/rails assets:precompile
 
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+# Copy entrypoint script and set permissions
+COPY --chown=appuser:appuser ./docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
+RUN chmod +x /usr/bin/docker-entrypoint.sh
+
+# Use the entrypoint script to prepare the database and other setup tasks
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 80
-CMD ["./bin/rails", "server", '-p', '80']
+CMD ["./bin/rails", "server", "-p", "80"]
