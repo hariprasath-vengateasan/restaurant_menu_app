@@ -35,6 +35,7 @@ first-time-setup-prod:
 # Setup production environment
 setup-prod:
 	$(DOCKER_COMPOSE_PROD) build
+	$(DOCKER_COMPOSE_PROD) run web rails db:migrate
 	@echo "Production environment is ready."
 
 # Run development environment
