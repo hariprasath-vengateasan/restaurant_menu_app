@@ -55,9 +55,9 @@ stop-prod:
 
 # Clean up stopped containers, but preserve the database volume
 clean:
-    $(DOCKER_COMPOSE_DEV) down
-    $(DOCKER_COMPOSE_PROD) down
-		@echo "Containers stopped and removed. Database volume preserved."
+	$(DOCKER_COMPOSE_DEV) down
+	$(DOCKER_COMPOSE_PROD) down
+	@echo "Containers stopped and removed. Database volume preserved."
 
 # Default target
 default: help
