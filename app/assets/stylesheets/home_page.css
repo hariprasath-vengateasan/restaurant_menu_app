@@ -20,3 +20,52 @@ body {
 .edit-popup-fields {
   display: grid;
 }
+
+/* Container for welcome message and logout link */
+.user-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f4f4f4;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.welcome-message {
+  font-size: 20px;
+  color: #333;
+}
+
+.logout-link {
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.logout-link:hover {
+  background-color: #0056b3;
+}
+
+.table-container {
+  position: relative;
+  padding: 0 15px 30px 15px; /* Adjust padding as needed */
+}
+
+.btn-add {
+  background-color: #28a745; /* Bootstrap green */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block; 
+  width: 100%; 
+  max-width: 200px;
+  margin: 20px auto 0;
+  display: inline;
+}
