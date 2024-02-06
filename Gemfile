@@ -73,3 +73,4 @@ end
 gem 'letter_opener_web'
 
 gem "delayed_job_active_record", "~> 4.1"
+gem 'jquery-rails'
