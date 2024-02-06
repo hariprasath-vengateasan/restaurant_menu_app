@@ -1,0 +1,39 @@
+# Base Ruby image matching project Ruby version
+ARG RUBY_VERSION=3.2.3
+FROM ruby:$RUBY_VERSION
+
+# Install dependencies, including libraries for Rails, image processing, and database interactions
+RUN apt-get update -qq && \
+    apt-get install -y build-essential libvips bash bash-completion libffi-dev tzdata postgresql-client nodejs npm yarn && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc /usr/share/man
+
+# Set the working directory
+WORKDIR /app
+
+# Set environment variables for Rails to run in production
+ENV RAILS_LOG_TO_STDOUT=true \
+    RAILS_SERVE_STATIC_FILES=true \
+    RAILS_ENV=production
+
+# Copy Gemfile and Gemfile.lock, and install gems for production
+COPY Gemfile Gemfile.lock ./
+RUN bundle config set --local without 'development test' && \
+    bundle install
+
+# Copy the application code
+COPY . .
+
+# Precompile assets
+RUN SECRET_KEY_BASE=placeholder RAILS_ENV=production rails assets:precompile
+
+# Copy and set permissions for the entrypoint script
+COPY ./bin/docker-entrypoint /usr/bin/docker-entrypoint.sh
+RUN chmod +x /usr/bin/docker-entrypoint.sh
+
+# Entrypoint to prepare database and other setup tasks
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+
+# Expose port 80 and start the Rails server
+EXPOSE 4000
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "4000"]

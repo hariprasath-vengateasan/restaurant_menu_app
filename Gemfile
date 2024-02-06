@@ -70,10 +70,10 @@ group :test do
   gem "selenium-webdriver"
 end
 
+gem 'letter_opener_web'
+
+gem "delayed_job_active_record", "~> 4.1"
 gem "jquery-rails", "~> 4.6"
 gem "turbolinks", "~> 5.2"
 gem "bootstrap", "~> 5.3"
 gem 'sassc-rails'
-gem 'letter_opener_web'
-
-gem "delayed_job_active_record", "~> 4.1"
