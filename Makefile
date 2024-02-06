@@ -1,7 +1,6 @@
 # Makefile for Restaurant Menu App
 
 # Variables
-REPOSITORY_URL = git@github.com:hariprasath-vengateasan/restaurant_menu_app.git
 IMAGE_NAME = restaurant_menu_app
 DOCKER_COMPOSE_DEV = docker-compose -f docker-compose.yml
 DOCKER_COMPOSE_PROD = docker-compose -f docker-compose-prod.yml
@@ -23,15 +22,13 @@ help:
 
 # Setup development environment
 setup-dev:
-	git clone $(REPOSITORY_URL)
-	cd restaurant_menu_app && $(DOCKER_COMPOSE_DEV) build
-	cd restaurant_menu_app && $(DOCKER_COMPOSE_DEV) run web rails db:create db:migrate
+	$(DOCKER_COMPOSE_DEV) build
+	$(DOCKER_COMPOSE_DEV) run web rails db:create db:migrate
 	@echo "Development environment is ready."
 
 # Setup production environment
 setup-prod:
-	git clone $(REPOSITORY_URL) restaurant_menu_app
-	cd restaurant_menu_app && docker build -t $(IMAGE_NAME):latest -f Dockerfile.prod .
+	docker build -t $(IMAGE_NAME):latest -f Dockerfile.prod .
 	@echo "Production environment is ready."
 
 # Run development environment

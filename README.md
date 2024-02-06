@@ -1,72 +1,104 @@
-I apologize for the inconvenience. Here's the entire `README.md` content as a single code snippet that you can easily copy and paste into your `README.md` file:
-
-```markdown
 # Restaurant Menu App
 
 Welcome to the Restaurant Menu App, a comprehensive solution for managing your restaurant's menu digitally. This application is built with Ruby on Rails and is dockerized for easy development and deployment.
 
 ## Prerequisites
 
-Before you begin, ensure you have Docker and Docker Compose installed on your system. Visit the official Docker documentation to download and install Docker for your operating system.
+Before you begin, make sure you have the following prerequisites installed on your system:
+
+1. **Docker and Docker Compose**: You'll need Docker and Docker Compose to run the application. If you don't have them installed, you can download and install them from the official Docker website:
+   - [Docker Installation](https://docs.docker.com/get-docker/)
+   - [Docker Compose Installation](https://docs.docker.com/compose/install/)
+
+2. **Git**: You'll need Git to clone the project repository. If you don't have Git installed, you can download and install it from the official Git website:
+   - [Git Installation](https://git-scm.com/downloads)
 
 ## Getting Started
 
-### Setup for Development Environment
+### Cloning the Repository
 
-1. **Clone the Repository**
+1. Open your terminal or command prompt.
 
+2. Clone the Restaurant Menu App repository to your local machine using the following command:
    ```sh
-   git clone <repository-url>
+   git clone git@github.com:hariprasath-vengateasan/restaurant_menu_app.git
+   ```
+
+3. Navigate to the project directory:
+   ```sh
    cd restaurant_menu_app
    ```
 
-2. **Build the Docker Containers**
+### Setup and Deployment Options
 
-   Navigate to the project directory and build the Docker containers using Docker Compose:
+You have two options for setting up and deploying the Restaurant Menu App:
 
-   ```sh
-   docker-compose -f docker-compose.yml build
+1. **Using the Makefile (Automated)**
+
+   For those who prefer a streamlined and automated way to manage the development and production environments, we have provided a Makefile. The Makefile simplifies common tasks and commands for setting up and running the Restaurant Menu App.
+
+   **Prerequisites**: Before using the Makefile, ensure you have Docker and Docker Compose installed on your system.
+
+   **Available Commands**:
+
+   - `make setup-dev`: Sets up the development environment.
+   - `make setup-prod`: Sets up the production environment.
+   - `make run-dev`: Runs the development environment.
+   - `make run-prod`: Runs the production environment.
+   - `make stop-prod`: Stops the production environment.
+   - `make clean`: Cleans up stopped containers and unused volumes.
+
+   To use the Makefile, open your terminal in the project directory and run the desired command using the `make` command, for example:
+
+   ```bash
+   make setup-dev
    ```
 
-3. **Database Setup**
+2. **Using Docker Direct Commands (Manual)**
+  ### Setup for Development Environment
 
-   After building the containers, set up the database with the following commands:
+   1. **Build the Docker Containers**
 
-   ```sh
-   docker-compose run web rails db:create db:migrate
-   ```
+      After cloning the repository, navigate to the project directory and build the Docker containers using Docker Compose:
+      ```sh
+      docker-compose -f docker-compose.yml build
+      ```
 
-4. **Start the Application**
+   2. **Database Setup**
 
-   Start the application by running:
+      Set up the database with the following commands:
+      ```sh
+      docker-compose run web rails db:create db:migrate
+      ```
 
-   ```sh
-   docker-compose up -d
-   ```
+   3. **Start the Application**
 
-   The application should now be running on [http://localhost:3000](http://localhost:3000).
+      Start the application by running:
+      ```sh
+      docker-compose up -d
+      ```
 
-### Setup for Production Environment
+      The application should now be running on [http://localhost:3000](http://localhost:3000).
 
-For production deployment, we use a slightly different Dockerfile (`Dockerfile.prod`), optimized for production:
+   ### Setup for Production Environment
 
-1. **Build the Docker Image**
+   For production deployment, we use a slightly different Dockerfile (`Dockerfile.prod`), optimized for production:
 
-   Build the Docker image using the production Dockerfile:
+   1. **Build the Docker Image**
 
-   ```sh
-   docker build -t restaurant_menu_app:latest -f Dockerfile.prod .
-   ```
+      Build the Docker image using the production Dockerfile:
+      ```sh
+      docker build -t restaurant_menu_app:latest -f Dockerfile.prod .
+      ```
 
-2. **Run the Container**
+   2. **Run the Container**
 
-   Run your container by specifying the production environment:
+      Run your container by specifying the production environment:
+      ```sh
+      docker run -d -p 80:80 --name restaurant_menu_app restaurant_menu_app:latest
+      ```
 
-   ```sh
-   docker run -d -p 80:80 --name restaurant_menu_app restaurant_menu_app:latest
-   ```
-
-   Your application should now be accessible on port 80 of your host machine.
+      Your application should now be accessible on port 80 of your host machine.
 
 ## Further Documentation and Roadmap
 
