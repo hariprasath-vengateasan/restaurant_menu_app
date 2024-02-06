@@ -72,7 +72,7 @@ class FoodMenuItemsController < ApplicationController
   end
 
   def food_menu_params
-    params.require(:food_menu_item).permit(:name, :description, :price, :category, :allergens)
+    params.require(:food_menu_item).permit(:dish_name, :dish_description, :price, :category, :allergens, :dish_type)
   end
 
   def authorized_user?

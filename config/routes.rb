@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   root to: 'home#index'
   mount LetterOpenerWeb::Engine, at: '/letter_opener'
 
-  resources :food_menu_items, only: [:index, :update, :post, :destory] do
+  resources :food_menu_items, only: [:index, :update, :create, :destroy] do
     collection do
       get :generate_csv_data
       post :import_csv
