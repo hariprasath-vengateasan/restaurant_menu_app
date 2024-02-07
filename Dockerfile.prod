@@ -19,7 +19,7 @@ ENV RAILS_LOG_TO_STDOUT=true \
 # Copy Gemfile and Gemfile.lock, and install gems for production
 COPY Gemfile Gemfile.lock ./
 RUN bundle config set --local without 'development test' && \
-    bundle install
+    bundle install --verbose --jobs 20 --retry 5
 
 # Copy the application code
 COPY . .
